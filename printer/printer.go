@@ -22,12 +22,8 @@ func getMaxColumnWidths(wallets []models.Wallet, colNames []string) []int {
 
 	for _, wallet := range wallets {
 		vof := reflect.ValueOf(wallet)
-		// fmt.Printf("%+v\n", wallet)
 		for i := 0; i < numFields; i++ {
-			// fmt.Printf("%v", vof.Field(i).Type() == reflect.TypeOf(time.Time{}))
 			fieldValue := fmt.Sprintf("%v", vof.Field(i).Interface())
-			// fmt.Printf("FieldValue: %+v", fieldValue)
-			// fmt.Printf(" Value Length :%d\n", len(fieldValue))
 			if maxColumnWidths[i] < len(fieldValue) {
 				maxColumnWidths[i] = len(fieldValue)
 			}

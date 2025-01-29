@@ -28,12 +28,15 @@ func GetObjectByID(data []models.Wallet, id int) (int, error) {
 	return 0, fmt.Errorf("Error: Resource with id %d not found ", id)
 }
 
-func FilterByMonth(data []models.Wallet, targetMonth func(models.Wallet) bool) []models.Wallet {
+func FilterByMonth(data []models.Wallet, targetMonth func(models.Wallet) bool) ([]models.Wallet, error) {
 	var result []models.Wallet
 	for _, obj := range data {
 		if targetMonth(obj) {
 			result = append(result, obj)
 		}
 	}
-	return result
+	if len(result) == 0 {
+		return []models.Wallet{}, fmt.Errorf("Not Found")
+	}
+	return result, nil
 }

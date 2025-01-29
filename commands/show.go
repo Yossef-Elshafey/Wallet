@@ -25,15 +25,19 @@ func (s *ShowArguments) Validate() error {
 
 func (s *ShowArguments) Display() {
 	fileData := utils.LoadJsonFile()
-	filtered := utils.FilterByMonth(fileData, func(wallet models.Wallet) bool {
+	filtered, err := utils.FilterByMonth(fileData, func(wallet models.Wallet) bool {
 		return int(wallet.AddedAt.Month()) == s.month && wallet.AddedAt.Year() == time.Now().Year()
 	})
-	if len(filtered) == 0 {
-		fmt.Println("No results found for the specified month.")
-		return
+
+	if err != nil {
+		fmt.Printf("%s: No results for Month: %d\n", err, s.month)
+		os.Exit(1)
 	}
 
-	printer.Printer(filtered)
+	if len(filtered) < s.limit || s.limit <= 0 {
+		s.limit = len(filtered)
+	}
+	printer.Printer(filtered[len(filtered)-s.limit:])
 }
 
 func RootAnalyzeCmd() *cobra.Command {
