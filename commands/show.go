@@ -26,8 +26,13 @@ func (s *ShowArguments) Validate() error {
 func (s *ShowArguments) Display() {
 	fileData := utils.LoadJsonFile()
 	filtered := utils.FilterByMonth(fileData, func(wallet models.Wallet) bool {
-		return int(wallet.AddedAt.Month()) == s.month
+		return int(wallet.AddedAt.Month()) == s.month && wallet.AddedAt.Year() == time.Now().Year()
 	})
+	if len(filtered) == 0 {
+		fmt.Println("No results found for the specified month.")
+		return
+	}
+
 	printer.Printer(filtered)
 }
 
