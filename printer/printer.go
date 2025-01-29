@@ -11,46 +11,54 @@ func dateDisplayFormatter(t *time.Time) string {
 	return t.Format("06-Jan-02 15:04:05")
 }
 
-func getMaxRowLength(wallets []models.Wallet) int {
+func getMaxColumnWidths(wallets []models.Wallet) []int {
+	vof := reflect.ValueOf(wallets[0])
+	numFields := vof.NumField()
+	maxColumnWidths := make([]int, numFields, numFields)
 
-	maxRowLength := 0
 	for _, wallet := range wallets {
-		row1 := len(wallet.Category)
-		row2 := len(wallet.AddedAt.String())
-		requiredRowLength := max(row1, row2)
-		if requiredRowLength > maxRowLength {
-			maxRowLength = requiredRowLength
+		vof := reflect.ValueOf(wallet)
+		fmt.Printf("%+v\n", wallet)
+		for i := 0; i < numFields; i++ {
+			fieldValue := fmt.Sprintf("%v", vof.Field(i).Interface())
+			// fmt.Printf("%+v\n", fieldValue)
+			// fmt.Printf("Length:%d\n", len(fieldValue))
+			if maxColumnWidths[i] < len(fieldValue) {
+				maxColumnWidths[i] = len(fieldValue)
+			}
 		}
 	}
-	return maxRowLength
+	return maxColumnWidths
 }
 
 func columnNames(wallet models.Wallet) []string {
 	var fieldNames []string
-	val := reflect.ValueOf(wallet)
+	vof := reflect.ValueOf(wallet)
 
-	for i := 0; i < val.NumField(); i++ {
-		fieldNames = append(fieldNames, val.Type().Field(i).Name)
+	for i := 0; i < vof.NumField(); i++ {
+		f := vof.Type().Field(i)
+		fieldNames = append(fieldNames, f.Name)
 	}
 	return fieldNames
 }
 
-func NewPrinter(wallets []models.Wallet) {
-	maxRowLength := getMaxRowLength(wallets) - 10
-
-	headers := columnNames(wallets[0])
-	for _, header := range headers {
-		fmt.Printf("%-*s ", maxRowLength, header)
-	}
-	fmt.Println()
-
-	for _, wallet := range wallets {
-		values := reflect.ValueOf(wallet)
-		for i := 0; i < values.NumField(); i++ {
-			colValue := fmt.Sprintf("%v", values.Field(i))
-			fmt.Printf("%-*s ", maxRowLength, colValue)
-		}
-		fmt.Println()
-	}
-	fmt.Printf("%-*s", maxRowLength, "#")
+func Printer(wallets []models.Wallet) {
+	maxColumnWidth := getMaxColumnWidths(wallets)
+	columnName := columnNames(wallets[0])
+	fmt.Println(columnName)
+	fmt.Println(maxColumnWidth)
+	// for _, header := range headers {
+	// 	fmt.Printf("%-*s ", maxColumnWidth, header)
+	// }
+	// fmt.Println()
+	//
+	// for _, wallet := range wallets {
+	// 	values := reflect.ValueOf(wallet)
+	// 	for i := 0; i < values.NumField(); i++ {
+	// 		colValue := fmt.Sprintf("%v", values.Field(i))
+	// 		fmt.Printf("%-*s ", maxColumnWidth, colValue)
+	// 	}
+	// 	fmt.Println()
+	// }
+	// fmt.Printf("%-*s", maxColumnWidth, "#")
 }

@@ -28,7 +28,7 @@ func (s *ShowArguments) Display() {
 	filtered := utils.FilterByMonth(fileData, func(wallet models.Wallet) bool {
 		return int(wallet.AddedAt.Month()) == s.month
 	})
-	printer.NewPrinter(filtered)
+	printer.Printer(filtered)
 }
 
 func RootAnalyzeCmd() *cobra.Command {
