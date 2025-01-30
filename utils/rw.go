@@ -38,7 +38,7 @@ func LoadJsonFile() models.Wallets {
 
 	if len(data) == 0 {
 		// At first write file is empty
-		emptyArray := []models.Wallet{}
+		emptyArray := models.Wallets{}
 		return emptyArray
 	}
 

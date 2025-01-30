@@ -26,7 +26,6 @@ func (s *ShowArguments) Validate() error {
 
 func (s *ShowArguments) Display() {
 	wallets := utils.LoadJsonFile()
-	fmt.Printf("Category: %s\n", s.category)
 	dataFilter, err := wallets.FilterWallet(func(wallet models.Wallet) bool {
 		filterByDate := int(wallet.AddedAt.Month()) == s.month && wallet.AddedAt.Year() == time.Now().Year()
 		filterByCategory := true
@@ -34,12 +33,11 @@ func (s *ShowArguments) Display() {
 		if s.category != "" {
 			filterByCategory = s.category == wallet.Category
 		}
-
 		return filterByDate && filterByCategory
 	})
 
 	if err != nil {
-		fmt.Printf("%s: No results for Month: %d\n", err, s.month)
+		fmt.Printf("%s: No results\n", err)
 		os.Exit(1)
 	}
 

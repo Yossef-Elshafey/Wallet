@@ -47,6 +47,7 @@ func columnNames(wallet models.Wallet) []string {
 
 func printHead(cn []string, columnWidth []int) {
 	for gap, header := range cn {
+
 		fmt.Printf("%-*s ", columnWidth[gap], header)
 	}
 	fmt.Println()
@@ -72,9 +73,17 @@ func printBody(wallets []models.Wallet, columnWidth []int) {
 		fmt.Println()
 	}
 
-	fmt.Println(strings.Repeat("-", slices.Max(columnWidth)))
+	padding := slices.Max(columnWidth) / 2
+	printTotal(total, padding)
+}
+
+func printTotal(total int, padding int) {
+	fmt.Printf("%-*s ", padding, " ")
+	fmt.Println(strings.Repeat("-", padding))
+	fmt.Printf("%-*s ", padding, " ")
 	fmt.Printf("Total: %d\n", total)
-	fmt.Println(strings.Repeat("-", slices.Max(columnWidth)))
+	fmt.Printf("%-*s ", padding, " ")
+	fmt.Println(strings.Repeat("-", padding))
 }
 
 func Print(wallets []models.Wallet) {
