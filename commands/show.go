@@ -37,10 +37,11 @@ func (s *ShowArguments) Display() {
 	if len(filtered) < s.limit || s.limit <= 0 {
 		s.limit = len(filtered)
 	}
-	printer.Printer(filtered[len(filtered)-s.limit:])
+
+	printer.Print(filtered[len(filtered)-s.limit:])
 }
 
-func RootAnalyzeCmd() *cobra.Command {
+func RootShowCmd() *cobra.Command {
 	showArguments := ShowArguments{}
 	var showCmd = &cobra.Command{
 		Use:   "show",

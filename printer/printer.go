@@ -43,15 +43,15 @@ func columnNames(wallet models.Wallet) []string {
 	return fieldNames
 }
 
-func Printer(wallets []models.Wallet) {
-	columnName := columnNames(wallets[0])
-	maxColumnWidth := getMaxColumnWidths(wallets, columnName)
-	for gap, header := range columnName {
-		fmt.Printf("%-*s ", maxColumnWidth[gap], header)
+func printHead(cn []string, columnWidth []int) {
+	for gap, header := range cn {
+		fmt.Printf("%-*s ", columnWidth[gap], header)
 	}
-
 	fmt.Println()
 
+}
+
+func printBody(wallets []models.Wallet, columnWidth []int) {
 	for _, wallet := range wallets {
 		values := reflect.ValueOf(wallet)
 		for i := 0; i < values.NumField(); i++ {
@@ -63,8 +63,16 @@ func Printer(wallets []models.Wallet) {
 				colValue = fmt.Sprintf("%v", values.Field(i).Interface())
 			}
 
-			fmt.Printf("%-*s ", maxColumnWidth[i], colValue)
+			fmt.Printf("%-*s ", columnWidth[i], colValue)
 		}
 		fmt.Println()
 	}
+
+}
+
+func Print(wallets []models.Wallet) {
+	columnName := columnNames(wallets[0])
+	maxColumnWidth := getMaxColumnWidths(wallets, columnName)
+	printHead(columnName, maxColumnWidth)
+	printBody(wallets, maxColumnWidth)
 }
