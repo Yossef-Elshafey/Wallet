@@ -28,7 +28,7 @@ func WriteToJsonFile(data []models.Wallet) {
 	}
 }
 
-func LoadJsonFile() []models.Wallet {
+func LoadJsonFile() models.Wallets {
 	absPath := GetAbsoluteFilePath()
 	data, err := os.ReadFile(absPath)
 

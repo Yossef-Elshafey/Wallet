@@ -22,7 +22,7 @@ func (m *ModifyArguments) Validate() error {
 
 func (m *ModifyArguments) ApplyModification() {
 	fileData := utils.LoadJsonFile()
-	idx, err := utils.GetObjectByID(fileData, m.ID)
+	idx, err := fileData.GetWalletByID(m.ID)
 
 	if err != nil {
 		fmt.Println(err)

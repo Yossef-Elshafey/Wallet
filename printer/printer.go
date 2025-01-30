@@ -3,6 +3,8 @@ package printer
 import (
 	"fmt"
 	"reflect"
+	"slices"
+	"strings"
 	"time"
 	"wallet/models"
 )
@@ -11,7 +13,7 @@ func dateDisplayFormatter(t *time.Time) string {
 	return t.Format("Mon Jan 02 03:04:05 PM")
 }
 
-func getMaxColumnWidths(wallets []models.Wallet, colNames []string) []int {
+func getMaxColumnWidths(wallets models.Wallets, colNames []string) []int {
 	vof := reflect.ValueOf(wallets[0])
 	numFields := vof.NumField()
 	maxColumnWidths := make([]int, 0, numFields)
@@ -52,8 +54,10 @@ func printHead(cn []string, columnWidth []int) {
 }
 
 func printBody(wallets []models.Wallet, columnWidth []int) {
+	var total int
 	for _, wallet := range wallets {
 		values := reflect.ValueOf(wallet)
+		total += int(wallet.Amount)
 		for i := 0; i < values.NumField(); i++ {
 			var colValue string
 			if values.Field(i).Type() == reflect.TypeOf(time.Time{}) {
@@ -68,6 +72,9 @@ func printBody(wallets []models.Wallet, columnWidth []int) {
 		fmt.Println()
 	}
 
+	fmt.Println(strings.Repeat("-", slices.Max(columnWidth)))
+	fmt.Printf("Total: %d\n", total)
+	fmt.Println(strings.Repeat("-", slices.Max(columnWidth)))
 }
 
 func Print(wallets []models.Wallet) {

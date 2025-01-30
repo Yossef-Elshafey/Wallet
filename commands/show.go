@@ -12,8 +12,9 @@ import (
 )
 
 type ShowArguments struct {
-	limit int
-	month int
+	limit    int
+	month    int
+	category string
 }
 
 func (s *ShowArguments) Validate() error {
@@ -24,9 +25,17 @@ func (s *ShowArguments) Validate() error {
 }
 
 func (s *ShowArguments) Display() {
-	fileData := utils.LoadJsonFile()
-	filtered, err := utils.FilterByMonth(fileData, func(wallet models.Wallet) bool {
-		return int(wallet.AddedAt.Month()) == s.month && wallet.AddedAt.Year() == time.Now().Year()
+	wallets := utils.LoadJsonFile()
+	fmt.Printf("Category: %s\n", s.category)
+	dataFilter, err := wallets.FilterWallet(func(wallet models.Wallet) bool {
+		filterByDate := int(wallet.AddedAt.Month()) == s.month && wallet.AddedAt.Year() == time.Now().Year()
+		filterByCategory := true
+
+		if s.category != "" {
+			filterByCategory = s.category == wallet.Category
+		}
+
+		return filterByDate && filterByCategory
 	})
 
 	if err != nil {
@@ -34,11 +43,11 @@ func (s *ShowArguments) Display() {
 		os.Exit(1)
 	}
 
-	if len(filtered) < s.limit || s.limit <= 0 {
-		s.limit = len(filtered)
+	if len(dataFilter) < s.limit || s.limit <= 0 {
+		s.limit = len(dataFilter)
 	}
 
-	printer.Print(filtered[len(filtered)-s.limit:])
+	printer.Print(dataFilter[len(dataFilter)-s.limit:])
 }
 
 func RootShowCmd() *cobra.Command {
@@ -57,5 +66,6 @@ func RootShowCmd() *cobra.Command {
 
 	showCmd.Flags().IntVar(&showArguments.limit, "limit", 0, "set limitations on displayed data (loads from last)")
 	showCmd.Flags().IntVar(&showArguments.month, "month", int(time.Now().Month()), "select certain month to display")
+	showCmd.Flags().StringVar(&showArguments.category, "category", "", "show by category")
 	return showCmd
 }
