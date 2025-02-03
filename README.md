@@ -7,9 +7,7 @@
 Clone the repository and build:
 
 ```sh
-git clone <repository-url>
-cd wallet-cli
-make build
+go build
 ```
 
 ## Usage
