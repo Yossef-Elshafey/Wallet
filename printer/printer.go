@@ -45,8 +45,8 @@ func columnNames(wallet models.Wallet) []string {
 	return fieldNames
 }
 
-func printHead(cn []string, columnWidth []int) {
-	for gap, header := range cn {
+func printHead(columnNames []string, columnWidth []int) {
+	for gap, header := range columnNames {
 
 		fmt.Printf("%-*s ", columnWidth[gap], header)
 	}
