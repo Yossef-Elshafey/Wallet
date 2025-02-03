@@ -18,6 +18,7 @@ make build
 
 ```sh
 wallet command -h
+wallet -h
 ```
 
 ### Show Records
