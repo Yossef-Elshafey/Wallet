@@ -7,6 +7,7 @@
 Clone the repository and build:
 
 ```sh
+go get wallet
 go build
 ```
 
